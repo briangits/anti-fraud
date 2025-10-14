@@ -1,0 +1,32 @@
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: #0a51df;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #e74c3c;
+}
+
+#alertsList {
+    list-style: none;
+    padding: 0;
+}
+
+#alertsList li {
+    padding: 12px;
+    margin-top: 8px;
+    background: #fff3cd;
+    border-left: 4px solid #ffcc00;
+    border-radius: 8px;
+}

@@ -1,0 +1,161 @@
+/* ====== General Layout ====== */
+
+body {
+    font-family: "Poppins", sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    color: #4070f4;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+p {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 25px;
+}
+
+
+/* ====== Dashboard Button ====== */
+
+.nav-tab {
+    background: #4070f4;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    float: right;
+    margin-top: -40px;
+}
+
+.nav-tab:hover {
+    background: #2f56c6;
+}
+
+
+/* ====== Table Styling ====== */
+
+#auditTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#auditTable thead {
+    background: #4070f4;
+    color: #fff;
+}
+
+#auditTable th,
+#auditTable td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e6e6e6;
+    font-size: 14px;
+}
+
+#auditTable tbody tr:nth-child(even) {
+    background: #f9f9ff;
+}
+
+#auditTable tbody tr:hover {
+    background: #eef2ff;
+    transition: 0.2s ease-in-out;
+}
+
+
+/* Timestamp & Node column emphasis */
+
+#auditTable td:first-child {
+    color: #555;
+    font-weight: 500;
+}
+
+#auditTable td:last-child {
+    color: #4070f4;
+    font-weight: 600;
+}
+
+
+/* ====== Loader Overlay ====== */
+
+#loaderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #ddd;
+    border-top: 6px solid #4070f4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+#loaderOverlay p {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ====== Responsive Design ====== */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+    }
+    #auditTable th,
+    #auditTable td {
+        font-size: 13px;
+        padding: 10px;
+    }
+    .nav-tab {
+        float: none;
+        display: block;
+        margin: 10px 0;
+    }
+    h2 {
+        flex-direction: column;
+        text-align: center;
+    }
+}

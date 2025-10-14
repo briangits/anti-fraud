@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Simulated AI Account Monitor (Demo)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --accent: #6d28d9;
+            --good: #10b981;
+            --bad: #ef4444;
+            --muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.03);
+        }
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, Arial;
+            background: linear-gradient(180deg, #071021 0%, #071827 100%);
+            color: #e6eef8;
+        }
+        
+        .wrap {
+            max-width: 1100px;
+            margin: 28px auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 20px
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600
+        }
+        
+        .muted {
+            color: var(--muted);
+            font-size: 13px
+        }
+        
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 18px;
+            margin-top: 18px
+        }
+        
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.015));
+            padding: 14px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(10, 12, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            justify-content: center;
+            width: 70%;
+        }
+        
+        .feed {
+            height: 640px;
+            overflow: auto
+        }
+        
+        .event {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: var(--glass);
+            border: 1px solid rgba(255, 255, 255, 0.02)
+        }
+        
+        .event .left {
+            display: flex;
+            gap: 12px
+        }
+        
+        .pill {
+            font-size: 12px;
+            padding: 6px 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--muted)
+        }
+        
+        .alert {
+            border-left: 4px solid var(--bad);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.06), rgba(255, 255, 255, 0.01))
+        }
+        
+        .ok {
+            border-left: 4px solid var(--good);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.04), rgba(255, 255, 255, 0.01))
+        }
+        
+        .summary {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+            flex-wrap: wrap
+        }
+        
+        .stat {
+            padding: 12px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.005));
+            min-width: 140px
+        }
+        
+        small {
+            color: var(--muted)
+        }
+        
+        .alertsList {
+            max-height: 420px;
+            overflow: auto
+        }
+        
+        .alertItem {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.002));
+            display: flex;
+            justify-content: space-between
+        }
+        
+        .sevHigh {
+            color: var(--bad);
+            font-weight: 700
+        }
+        
+        .sevLow {
+            color: #fbbf24;
+            font-weight: 700
+        }
+        
+        .sevOk {
+            color: var(--good);
+            font-weight: 700
+        }
+        
+        footer {
+            margin-top: 18px;
+            color: var(--muted);
+            font-size: 13px
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <header>
+            <div>
+                <h1>Simulated AI Account Monitor — Demo</h1>
+                <div class="muted">Prototype: consent-based monitoring logic (simulation only)</div>
+            </div>
+            <div class="controls">
+                <button id="startSim" class="btn">Start Simulation</button>
+                <button id="stopSim" class="btn" style="background:#334155">Stop</button>
+                <div style="width:1px;height:28px;background:rgba(255,255,255,0.04)"></div>
+                <div class="muted">Event rate:</div>
+                <select id="rate" style="padding:8px;border-radius:8px;background:transparent;color:#e6eef8;border:1px solid rgba(255,255,255,0.03)">
+          <option value="3000">Slow</option>
+          <option value="1500" selected>Normal</option>
+          <option value="600">Fast</option>
+        </select>
+            </div>
+        </header>
+
+        <div class="layout">
+            <!-- Left: Events feed -->
+            <div class="card">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                    <div><strong>Live Event Feed</strong>
+                        <div class="muted">Simulated account events (Google, Bank, M-Pesa, E-wallet)</div>
+                    </div>
+                    <div class="pill" id="connectedCount">Linked: 0</div>
+                </div>
+
+                <div class="summary">
+                    <div class="stat">
+                        <div class="muted">Total Events</div>
+                        <div id="totalCount">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="muted">Alerts</div>
+                        <div id="alertCount">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="muted">High Severity</div>
+                        <div id="highCount">0</div>
+                    </div>
+                    <div class="stat">
+                        <div class="muted">Avg Risk</div>
+                        <div id="avgRisk">0</div>
+                    </div>
+                </div>
+
+                <div class="feed" id="feed"></div>
+            </div>
+
+            <!-- Right: Alerts / controls -->
+            <div>
+                <div class="card">
+                    <strong>AI Alerts</strong>
+                    <div class="muted">Detected suspicious activity</div>
+                    <div class="alertsList" id="alertsList" style="margin-top:12px"></div>
+                </div>
+
+                <div class="card" style="margin-top:12px">
+                    <strong>Simulated Linked Accounts</strong>
+                    <div class="muted">Click to (simulated) link sample accounts</div>
+                    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+                        <button class="pill" data-link="google">Link Google</button>
+                        <button class="pill" data-link="bank">Link Bank</button>
+                        <button class="pill" data-link="mpesa">Link M-Pesa</button>
+                        <button class="pill" data-link="ewallet">Link E-Wallet</button>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top:12px">
+                    <strong>Explainability</strong>
+                    <div class="muted">Why flagged?</div>
+                    <div id="explain" style="margin-top:10px;color:var(--muted)">Select an alert to see details.</div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            This is a local simulation only — do not use with real credentials. For production, integrate with official APIs + OAuth + encryption + consent.
+        </footer>
+    </div>
+
+    <script>
+        /*
+                                                                                                                                                          Simulated AI monitoring demo.
+                                                                                                                                                          - Generates mock events for Google, Bank, M-Pesa, E-wallet.
+                                                                                                                                                          - Runs simple anomaly scoring rules to raise alerts.
+                                                                                                                                                          - UI lists alerts and allows inspection.
+                                                                                                                                                        */
+
+        // Utility
+        const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+        const now = () => new Date().toLocaleTimeString();
+        const toN = v => Math.round(v * 100) / 100;
+
+        let simInterval = null;
+        let eventRate = 1500;
+        let counters = {
+            total: 0,
+            alerts: 0,
+            high: 0,
+            riskSum: 0,
+            linked: 0
+        };
+
+        // Sample linked accounts (simulated)
+        const linked = {
+            google: false,
+            bank: false,
+            mpesa: false,
+            ewallet: false
+        };
+        document.querySelectorAll('[data-link]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.link;
+                linked[type] = !linked[type];
+                btn.style.background = linked[type] ? 'rgba(109,40,217,0.12)' : 'transparent';
+                btn.style.border = linked[type] ? '1px solid rgba(109,40,217,0.4)' : '1px solid rgba(255,255,255,0.03)';
+                updateConnected();
+            });
+        });
+
+        function updateConnected() {
+            const n = Object.values(linked).filter(Boolean).length;
+            counters.linked = n;
+            document.getElementById('connectedCount').textContent = `Linked: ${n}`;
+        }
+
+        // Event generators
+        const sampleUsers = ['alice', 'bob', 'carol', 'dave', 'eve'];
+        const countries = ['KE', 'US', 'GB', 'NG', 'IN', 'ZA'];
+        const devices = ['Chrome Desktop', 'Android App', 'iOS App', 'Firefox Desktop', 'Unknown'];
+
+        function genGoogleEvent() {
+            return {
+                kind: 'google_login',
+                account: rand(sampleUsers) + '@gmail.com',
+                ip: `10.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`,
+                country: rand(countries),
+                device: rand(devices),
+                time: now(),
+            };
+        }
+
+        function genBankEvent() {
+            const amount = Number((Math.random() * 5000).toFixed(2));
+            return {
+                kind: 'bank_txn',
+                account: 'ACCT-' + Math.floor(Math.random() * 900000 + 100000),
+                amount,
+                currency: 'KES',
+                merchant: rand(['SuperMart', 'OnlineStore', 'UtilityCo', 'TaxiService', 'MerchantX']),
+                country: rand(countries),
+                time: now()
+            };
+        }
+
+        function genMpesaEvent() {
+            const amount = Number((Math.random() * 20000).toFixed(2));
+            return {
+                kind: 'mpesa_txn',
+                MSISDN: '07' + Math.floor(10000000 + Math.random() * 89999999),
+                amount,
+                trx: 'MP-' + Math.random().toString(36).slice(2, 9).toUpperCase(),
+                type: rand(['Paybill', 'LipaNaMpesa', 'Till']),
+                time: now()
+            };
+        }
+
+        function genEwalletEvent() {
+            const amount = Number((Math.random() * 3000).toFixed(2));
+            return {
+                kind: 'ewallet_txn',
+                walletId: 'WAL-' + Math.random().toString(36).slice(2, 8).toUpperCase(),
+                amount,
+                vendor: rand(['RideShare', 'FoodApp', 'GameStore']),
+                time: now()
+            };
+        }
+
+        // Simple anomaly scoring rules (toy examples)
+        function scoreEvent(ev) {
+            let score = 0;
+            const reasons = [];
+
+            if (ev.kind === 'google_login') {
+                // new country or unknown device -> suspicious
+                if (ev.country !== 'KE' && ev.country !== 'US') {
+                    score += 0.4;
+                    reasons.push('Unusual country');
+                }
+                if (ev.device === 'Unknown') {
+                    score += 0.25;
+                    reasons.push('Unknown device fingerprint');
+                }
+            }
+
+            if (ev.kind === 'bank_txn' || ev.kind === 'mpesa_txn' || ev.kind === 'ewallet_txn') {
+                const amount = ev.amount || 0;
+                if (amount > 5000) {
+                    score += 0.5;
+                    reasons.push('Large amount');
+                }
+                if (amount > 10000) {
+                    score += 0.6;
+                    reasons.push('Very large amount');
+                }
+                // velocity: simulate a chance that many txns from same account in short time
+                if (Math.random() > 0.95) {
+                    score += 0.45;
+                    reasons.push('High velocity');
+                }
+            }
+
+            // random model noise (simulated AI)
+            score += Math.random() * 0.15;
+
+            // clamp to 0..1.5
+            if (score > 1.5) score = 1.5;
+
+            return {
+                score: toN(score),
+                reasons
+            };
+        }
+
+        // UI functions
+        function pushEventToFeed(ev, result) {
+            counters.total++;
+            counters.riskSum += result.score;
+            document.getElementById('totalCount').textContent = counters.total;
+
+            const feed = document.getElementById('feed');
+            const div = document.createElement('div');
+            div.className = 'event ' + (result.score > 0.6 ? 'alert' : 'ok');
+            div.innerHTML = `
+    <div class="left">
+      <div style="min-width:120px">
+        <div style="font-weight:700">${ev.kind}</div>
+        <div style="font-size:12px;color:var(--muted)">${ev.time}</div>
+      </div>
+      <div>
+        <small style="color:var(--muted)">${JSON.stringify(ev).slice(0,120)}${JSON.stringify(ev).length>120?'...':''}</small>
+      </div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-weight:700">${result.score}</div>
+      <div style="font-size:12px;color:var(--muted)">${result.reasons.join(', ')||'—'}</div>
+    </div>
+  `;
+            feed.prepend(div);
+            // cap feed length
+            while (feed.children.length > 150) feed.removeChild(feed.lastChild);
+        }
+
+        function pushAlert(ev, result) {
+            counters.alerts++;
+            if (result.score > 0.9) counters.high++;
+            document.getElementById('alertCount').textContent = counters.alerts;
+            document.getElementById('highCount').textContent = counters.high;
+            document.getElementById('avgRisk').textContent = toN(counters.riskSum / Math.max(1, counters.total));
+
+            const list = document.getElementById('alertsList');
+            const item = document.createElement('div');
+            item.className = 'alertItem';
+            item.innerHTML = `<div><strong>${ev.kind}</strong><div style="font-size:12px;color:var(--muted)">${ev.time}</div></div>
+    <div style="text-align:right">
+      <div class="${result.score>0.9 ? 'sevHigh' : result.score>0.6 ? 'sevLow' : 'sevOk'}">${result.score}</div>
+      <button style="margin-top:6px;padding:6px 8px;border-radius:6px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)" onclick='explainAlert(this)'>Explain</button>
+    </div>`;
+            item.dataset.ev = JSON.stringify(ev);
+            item.dataset.result = JSON.stringify(result);
+            list.prepend(item);
+            while (list.children.length > 40) list.removeChild(list.lastChild);
+        }
+
+        function explainAlert(button) {
+            const item = button.closest('.alertItem');
+            const ev = JSON.parse(item.dataset.ev);
+            const result = JSON.parse(item.dataset.result);
+            const explain = document.getElementById('explain');
+            explain.innerHTML = `<div style="color:#fff;font-weight:700;margin-bottom:8px">${ev.kind} — score ${result.score}</div>
+  <div><strong>Reasons:</strong> ${result.reasons.length? result.reasons.join(', ') : 'No single rule — model uncertainty'}</div>
+  <div style="margin-top:8px"><strong>Suggested actions:</strong> <ul style="margin:6px 0 0 16px;color:var(--muted)"><li>Prompt user to verify</li><li>Block session / require 2FA</li><li>Flag for manual review</li></ul></div>`;
+        }
+
+        // Simulation loop
+        function singleTick() {
+            // choose event type among linked accounts only; if none linked, emit background noise
+            const available = Object.keys(linked).filter(k => linked[k]);
+            const types = available.length ? available : ['google', 'bank', 'mpesa', 'ewallet'];
+            const pick = rand(types);
+
+            let ev;
+            if (pick === 'google') ev = genGoogleEvent();
+            else if (pick === 'bank') ev = genBankEvent();
+            else if (pick === 'mpesa') ev = genMpesaEvent();
+            else ev = genEwalletEvent();
+
+            const r = scoreEvent(ev);
+            pushEventToFeed(ev, r);
+            // threshold for alert
+            if (r.score > 0.5) {
+                pushAlert(ev, r);
+            }
+        }
+
+        // Controls
+        document.getElementById('startSim').addEventListener('click', () => {
+            if (simInterval) return;
+            eventRate = Number(document.getElementById('rate').value);
+            simInterval = setInterval(singleTick, eventRate);
+        });
+        document.getElementById('stopSim').addEventListener('click', () => {
+            if (simInterval) {
+                clearInterval(simInterval);
+                simInterval = null;
+            }
+        });
+
+        // init UI
+        updateConnected();
+    </script>
+</body>
+
+</html>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Alerts — Decentralized Fraud Detection</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</head>
+
+<body style="font-family: Poppins, sans-serif; background: #f0f4f9; margin: 0; padding: 0;">
+
+    <div style="text-align:center; padding: 40px;">
+        <h1 style="color:#2c3e50;">🧠 AI-Driven Alerts Dashboard</h1>
+        <p style="color:#555; font-size:16px;">Monitor real-time decentralized AI security activity</p>
+        <button id="aiAlertsBtn" style="
+      background: linear-gradient(135deg, #4CAF50, #2e7d32);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    ">🚨 Show AI Alerts</button>
+    </div>
+
+    <div id="alertsContainer" style="display:none;"></div>
+
+    <script>
+        document.getElementById("aiAlertsBtn").addEventListener("click", function() {
+
+            // --- Disable button to prevent re-click ---
+            this.disabled = true;
+            this.style.opacity = "0.7";
+            this.textContent = "Loading AI Alerts...";
+
+            // --- Loader overlay ---
+            const loader = document.createElement("div");
+            loader.id = "loaderOverlay";
+            loader.innerHTML = `
+        <div style="
+          position: fixed;
+          top: 0; left: 0;
+          width: 100vw; height: 100vh;
+          background: rgba(255, 255, 255, 0.95);
+          display: flex; flex-direction: column;
+          justify-content: center; align-items: center;
+          z-index: 9999;">
+          <div style="
+            width: 70px; height: 70px;
+            border: 8px solid #ccc;
+            border-top: 8px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;"></div>
+          <p style="margin-top: 18px; font-size: 18px; color: #333; font-weight: bold;">
+            AI Analyzing Decentralized Alerts...
+          </p>
+        </div>
+        <style>
+          @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        </style>
+      `;
+            document.body.appendChild(loader);
+
+            // --- Simulate AI processing ---
+            setTimeout(() => {
+                loader.remove();
+                showAIAlerts();
+            }, 2000);
+        });
+
+        // --- Function to generate AI Alerts dynamically ---
+        function showAIAlerts() {
+            const container = document.getElementById("alertsContainer");
+            container.style.display = "block";
+            container.style.width = "85%";
+            container.style.maxWidth = "800px";
+            container.style.margin = "30px auto";
+            container.style.background = "#ffffff";
+            container.style.borderRadius = "12px";
+            container.style.boxShadow = "0 6px 18px rgba(0,0,0,0.1)";
+            container.style.padding = "25px";
+            container.innerHTML = `
+        <h2 style="text-align:center; color:#4CAF50; font-size:24px;">
+          🔍 Real-Time AI Security Alerts
+        </h2>
+        <ul id="alertList" style="list-style:none; padding:0; margin-top:20px;"></ul>
+      `;
+
+            const alertList = document.getElementById("alertList");
+
+            const alertTypes = [{
+                type: "Login Attempt",
+                color: "#007bff"
+            }, {
+                type: "Suspicious Transaction",
+                color: "#dc3545"
+            }, {
+                type: "New Node Connected",
+                color: "#28a745"
+            }, {
+                type: "Smart Contract Update",
+                color: "#ff9800"
+            }, {
+                type: "Unauthorized Access Blocked",
+                color: "#e91e63"
+            }, {
+                type: "System Check Completed",
+                color: "#009688"
+            }];
+
+            const aiPhrases = [
+                "Pattern deviation detected in transaction flow.",
+                "Node consensus validation complete.",
+                "Blockchain sync latency optimized.",
+                "AI anomaly detection triggered.",
+                "Fraud probability reduced by 95%.",
+                "Alert correlation engine recalibrated.",
+                "Neural scan detected abnormal data signature."
+            ];
+
+            // --- AI adds alerts dynamically every few seconds ---
+            setInterval(() => {
+                const random = alertTypes[Math.floor(Math.random() * alertTypes.length)];
+                const phrase = aiPhrases[Math.floor(Math.random() * aiPhrases.length)];
+                const time = new Date().toLocaleTimeString();
+
+                const li = document.createElement("li");
+                li.style = `
+          margin: 12px 0;
+          background: #f8f9fa;
+          border-left: 6px solid ${random.color};
+          padding: 12px 16px;
+          border-radius: 8px;
+          box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          transition: transform 0.3s ease, background 0.3s ease;
+        `;
+                li.innerHTML = `
+          <div>
+            <strong style="color:${random.color};">${random.type}</strong><br>
+            <small style="color:#555;">${phrase}</small>
+          </div>
+          <span style="font-size:13px; color:#888;">${time}</span>
+        `;
+
+                li.onmouseover = () => li.style.background = "#e8f5e9";
+                li.onmouseleave = () => li.style.background = "#f8f9fa";
+
+                // Animation on entry
+                li.style.transform = "translateY(-10px)";
+                li.style.opacity = "0";
+                setTimeout(() => {
+                    li.style.transform = "translateY(0)";
+                    li.style.opacity = "1";
+                }, 100);
+
+                // Keep the list fresh
+                alertList.prepend(li);
+                if (alertList.children.length > 10) {
+                    alertList.removeChild(alertList.lastChild);
+                }
+            }, 4000);
+        }
+    </script>
+
+</body>
+
+</html>

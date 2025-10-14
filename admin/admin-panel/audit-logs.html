@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audit Logs — Decentralized Fraud Detection System</title>
+    <link rel="stylesheet" href="js/audit.css" />
+</head>
+
+<body>
+    <div class="container">
+        <h2><i class="fas fa-history"></i> Audit Logs</h2>
+        <button id="dashboardTab" class=" nav-tab px-4 py-2 text-sm font-medium rounded-lg ">Dashboard</button>
+        <script>
+            document.getElementById('dashboardTab').addEventListener('click', function(e) {
+                e.preventDefault(); // prevent immediate redirect
+
+                // Show alert
+                alert("Redirecting to Decentralized Dashboard...");
+
+                // Create and show loader overlay
+                const loader = document.createElement('div');
+                loader.innerHTML = `
+                            <div id="loaderOverlay">
+                            <div class="spinner"></div>
+                            <p>Loading Decentralized Dashboard...</p>
+                           </div>
+                            `;
+                document.body.appendChild(loader);
+
+                // Add CSS styles dynamically for loader
+                const style = document.createElement('style');
+                style.textContent = `
+                             #loaderOverlay {
+                             position: fixed;
+                             top: 0; left: 0;
+                             width: 100vw; height: 100vh;
+                            background: rgba(255, 255, 255, 0.9);
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                            z-index: 9999;
+                            }
+                            .spinner {
+                            width: 60px;
+                            height: 60px;
+                            border: 6px solid #ddd;
+                            border-top: 6px solid #4070f4;
+                            border-radius: 50%;
+                            animation: spin 1s linear infinite;
+                            }
+                            @keyframes spin {
+                            from { transform: rotate(0deg); }
+                            to { transform: rotate(360deg); }
+                            }
+                            #loaderOverlay p {
+                            margin-top: 15px;
+                            font-size: 16px;
+                            color: #333;
+                            }
+                            `;
+                document.head.appendChild(style);
+
+                // Simulate a loading delay before redirect
+                setTimeout(() => {
+                    window.location.href = 'decentralized.html';
+                }, 2000); // 2 seconds delay
+            });
+        </script>
+
+        <p>All recorded security and transaction events in the system.</p>
+
+        <table id="auditTable">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>User</th>
+                    <th>Action</th>
+                    <th>Target</th>
+                    <th>Outcome</th>
+                    <th>Node</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Logs will be inserted dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/audit-logs.js"></script>
+</body>
+
+</html>
