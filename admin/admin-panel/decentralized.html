@@ -391,6 +391,22 @@
             /* Even darker when clicked */
             transform: translateY(1px);
         }
+          
+        .Admin_panel {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .Admin_panel.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
         
         .role-btn {
             padding: 10px 20px;
