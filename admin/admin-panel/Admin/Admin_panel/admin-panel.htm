@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure_Cybering Admin Panel Overview</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="header">Admin Panel Overview</h1>
+        <nav>
+            <ul>
+                <li>Dashboard</li>
+                <li>Peers </li>
+
+            </ul>
+
+
+            <button onclick="refreshData()">Refresh</button>
+        </nav>
+
+        <main class="dashboard">
+            <!-- Payment Sub-Socket -->
+            <div class="card">
+                <h3>Payment</h3>
+                <p>Flagged Payments: <span id="flagged-payments">15</span></p>
+                <p>High-Risk Transactions: <span id="high-risk">3</span></p>
+                <p class="alert">Recent Alert: Suspicious transaction from UserY</p>
+                <button class="view_payment_logs">View Payment Logs</button>
+            </div>
+
+            <!-- Peers Authentication Sub-Socket -->
+            <div class="card">
+                <h3>Peers Authentication</h3>
+                <p>Active Authentications: <span id="active-auth">120</span></p>
+                <p>Failed Attempts Today: <span id="failed-auth">5</span></p>
+                <p>Top Failed IP: 192.168.1.1</p>
+                <p class="alert">Top Failed IP: 192.168.1.1</p>
+                <button class="view_auth_logs">View Authentication Logs</button>
+            </div>
+
+            <!-- Peers Logged In Sub-Socket -->
+            <div class="card">
+                <h3>Peers Logged In</h3>
+                <p>Total Online: <span id="online-peers">25</span></p>
+                <ul id="online-list">
+                    <li>UserA (Regular) - Online since 10:00 AM</li>
+                    <li>UserB (Manager) - Online since 9:45 AM</li>
+                    <!-- Add more dynamically -->
+
+                    <button class="view_logged_users"> View Logged Users</button>
+                </ul>
+            </div>
+
+            <!-- View Peers Votes Sub-Socket -->
+            <div class="card">
+                <h3>View Peers Votes</h3>
+                <p>Pending Votes: <span id="pending-votes">8</span></p>
+                <p>Resolved Issues: <span id="resolved-votes">20</span></p>
+                <p class="alert">Top Pending: Fraud report on UserX (Votes: 7/10)</p>
+
+                <button class="view-votes-btn" onclick="viewVotes()">View Detailed Votes</button>
+            </div>
+
+            <!-- Peers Reputation Sub-Socket -->
+            <div class="card">
+                <h3>Peers Reputation</h3>
+                <p>Total Peers: <span id="total-peers">30</span></p>
+                <table class="reputation-table">
+                    <thead>
+                        <tr>
+                            <th>Peer Name</th>
+                            <th>Reputation Score</th>
+                            <th>Recent Change</th>
+                            <th>Actions</th>
+                            <!-- New column for admin actions -->
+                        </tr>
+                    </thead>
+                    <tbody id="reputation-list">
+                        <tr>
+                            <td>UserB</td>
+                            <td>15</td>
+                            <td>+5 (Reported fraud, voted yes)</td>
+                            <td><button class="delete-btn" data-peer="UserB">Delete</button></td>
+                            <td><button class="ban-btn" data-peer="UserB">Ban</button></td>
+                        </tr>
+                        <tr>
+                            <td>UserX</td>
+                            <td>-10</td>
+                            <td>-3 (Accused of fraud, majority vote yes)</td>
+                            <td><button class="delete-btn" data-peer="UserX">Delete</button></td>
+                            <td><button class="ban-btn" data-peer="UserX">Ban</button></td>
+                        </tr>
+                        <!-- Add more rows dynamically -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+
+    </div>
+    <script src="/server/server.js"></script>
+    <script>
+        // Mock data loading (replace with real API calls, e.g., fetch('/api/admin-data'))
+        document.addEventListener('DOMContentLoaded', () => {
+            // Simulate fetching data
+            setTimeout(() => {
+                // Example: Update from backend
+                document.getElementById('flagged-payments').textContent = '16'; // Updated value
+                // For blockchain: Use Web3.js to query votes/reputation
+                const web3 = new Web3('https://ropsten.infura.io/v3/your-key');
+                const contract = new web3.eth.Contract(abi, address);
+                //contract.methods.getReputation('UserX').call().then(score => {...});
+            }, 1000);
+        });
+
+
+
+        function refreshData() {
+            location.reload();
+        }
+
+
+        function updateReputationTable(reputationData) {
+            const totalPeersSpan = document.getElementById('total-peers');
+            const reputationList = document.getElementById('reputation-list');
+
+            // Update total peers count
+            totalPeersSpan.textContent = reputationData.totalPeers || 0;
+
+            // Clear existing rows
+            reputationList.innerHTML = '';
+
+            // Populate table with new data, including delete buttons
+            if (reputationData.list && Array.isArray(reputationData.list)) {
+                reputationData.list.forEach(peer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                <td>${peer.name || 'Unknown'}</td>
+                <td>${peer.score || 0}</td>
+                <td>${peer.change || 'No change'}</td>
+                <td><button class="delete-btn" data-peer="${peer.name}">Delete</button></td>
+            `;
+                    reputationList.appendChild(row);
+                });
+            } else {
+                // Fallback if no data
+                reputationList.innerHTML = '<tr><td colspan="4">No reputation data available</td></tr>';
+            }
+
+            // Attach event listeners to new delete buttons
+            attachDeleteListeners();
+        }
+
+        // Function to attach delete event listeners
+        function attachDeleteListeners() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const peerName = e.target.getAttribute('data-peer');
+                    deletePeer(peerName);
+                });
+            });
+        }
+
+        // Function to delete a peer (admin action)
+        function deletePeer(peerName) {
+            // Confirm deletion (optional UX)
+            if (!confirm(`Are you sure you want to delete peer "${peerName}"? This action cannot be undone.`)) return;
+
+            // Update local data
+            aggregatedData.reputation.list = aggregatedData.reputation.list.filter(peer => peer.name !== peerName);
+            aggregatedData.reputation.totalPeers -= 1;
+
+            // Update DOM
+            updateReputationTable(aggregatedData.reputation);
+
+            // Send update to server for persistence and broadcasting
+            socket.emit('deletePeer', {
+                peerName,
+                updatedData: aggregatedData.reputation
+            });
+
+            // Optional: Log or alert
+            console.log(`Peer "${peerName}" deleted by admin.`);
+        }
+    </script>
+</body>
+
+</html>
