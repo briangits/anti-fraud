@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        header {
+            background: #007bff;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .login-form,
+        .dashboard {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+        }
+        
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .card {
+            background-color: #ffffff;
+            padding: 20px;
+            width: 50%;
+            margin: 15px 0;
+            text-align: center;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #007bff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .card h3 {
+            margin-bottom: 10px;
+            color: #007bff;
+            font-size: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #203244;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-section {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f2f2f2;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Fraud Detection System</h1>
+        <p>Emerging Trends: AI, Decentralized, Real-Time</p>
+    </header>
+
+    <div class="container">
+        <!-- Login Section -->
+        <div id="login-section" class="login-form">
+            <h2>Login</h2>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <select id="role" required>
+                    <option value="">Select Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                </select>
+                <button type="submit">Login</button>
+            </form>
+            <p id="login-error" class="hidden">Invalid credentials.</p>
+            <div id="loader" class="hidden">
+                <div class="spinner"></div>
+                <p>Authenticating...</p>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="hidden dashboard fade-in">
+            <h2>Admin Panel - <span id="user-role"></span></h2>
+
+            <div class="card">
+                <h3>AI Fraud Predictions</h3>
+                <p id="ai-predictions">Analyzing patterns...</p>
+                <button onclick="runAIAnalysis()">Run AI Analysis</button>
+            </div>
+
+            <div class="card">
+                <h3>Decentralized Reputation</h3>
+                <p>Total Peers: <span id="total-peers">30</span></p>
+                <table id="reputation-table">
+                    <tr>
+                        <th>Peer</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Real-Time Alerts</h3>
+                <ul id="alerts-list"></ul>
+                <button onclick="refreshAlerts()">Refresh Alerts</button>
+            </div>
+
+            <div class="card">
+                <h3>Behavioral Biometrics</h3>
+                <p id="biometrics-data">Typing Speed: Normal</p>
+                <button onclick="simulateBiometrics()">Check Biometrics</button>
+            </div>
+
+            <div class="card">
+                <h3>Report Fraud (Peer Gossip)</h3>
+                <form id="fraud-form">
+                    <input type="text" placeholder="Peer Name" id="peer-name" required>
+                    <textarea placeholder="Description" id="description" required></textarea>
+                    <button type="submit">Submit Report</button>
+                </form>
+                <p id="report-status"></p>
+            </div>
+
+            <div class="card">
+                <h3>Zero-Trust Verification</h3>
+                <p>Session: <span id="session-status">Verified</span></p>
+                <button onclick="verifySession()">Re-Verify</button>
+            </div>
+
+            <button onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // Mock data
+        const sampleUsers = [{
+            username: 'Admin',
+            password: 'Admin123',
+            role: 'admin'
+        }, {
+            username: 'Manager',
+            password: 'Manager123',
+            role: 'manager'
+        }];
+        let alerts = ['Suspicious login detected', 'Unusual vote pattern'];
+        let reputationData = [{
+            peer: 'UserA',
+            score: 85,
+            status: 'Low Risk'
+        }, {
+            peer: 'UserB',
+            score: 45,
+            status: 'High Risk'
+        }];
+
+        // Login handling
+        document.getElementById('login-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const role = document.getElementById('role').value;
+
+            const user = sampleUsers.find(u => u.username === username && u.password === password && u.role === role);
+            if (user) {
+                localStorage.setItem('username', username);
+                localStorage.setItem('userRole', role);
+                document.getElementById('login-section').classList.add('hidden');
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                document.getElementById('user-role').textContent = role.toUpperCase();
+                loadDashboard();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        });
+
+        // Load dashboard
+        function loadDashboard() {
+            updateReputationTable();
+            updateAlerts();
+        }
+
+        // AI Analysis
+        function runAIAnalysis() {
+            document.getElementById('ai-predictions').textContent = 'AI: 70% fraud risk in transactions.';
+            setTimeout(() => document.getElementById('ai-predictions').textContent = 'Analyzing patterns...', 3000);
+        }
+
+        // Reputation Table
+        function updateReputationTable() {
+            const table = document.getElementById('reputation-table');
+            table.innerHTML = '<tr><th>Peer</th><th>Score</th><th>Status</th></tr>' +
+                reputationData.map(row => `<tr><td>${row.peer}</td><td>${row.score}</td><td>${row.status}</td></tr>`).join('');
+        }
+
+        // Alerts
+        function updateAlerts() {
+            const list = document.getElementById('alerts-list');
+            list.innerHTML = alerts.map(alert => `<li>${alert}</li>`).join('');
+        }
+
+        function refreshAlerts() {
+            alerts.push('New alert: High-risk peer');
+            updateAlerts();
+        }
+
+        // Biometrics
+        function simulateBiometrics() {
+            document.getElementById('biometrics-data').textContent = 'Typing Speed: Fast | Risk: Low';
+        }
+
+        // Fraud Report
+        document.getElementById('fraud-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const peer = document.getElementById('peer-name').value;
+            document.getElementById('report-status').textContent = `Report submitted for ${peer}`;
+            reputationData.push({
+                peer,
+                score: Math.floor(Math.random() * 100),
+                status: 'Under Review'
+            });
+            updateReputationTable();
+        });
+
+        // Zero-Trust
+        function verifySession() {
+            document.getElementById('session-status').textContent = 'Re-Verifying...';
+            setTimeout(() => document.getElementById('session-status').textContent = 'Verified', 2000);
+        }
+
+        // Logout
+        function logout() {
+            localStorage.clear();
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('login-error').classList.add('hidden');
+        }
+
+        // Check if logged in on load
+        if (localStorage.getItem('userRole')) {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('dashboard-section').classList.remove('hidden');
+            document.getElementById('user-role').textContent = localStorage.getItem('userRole').toUpperCase();
+            loadDashboard();
+        }
+    </script>
+</body>
+
+</html>
