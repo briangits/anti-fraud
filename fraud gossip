@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Detection Gossips</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        section {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .tips {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Gossips Section</h1>
+
+    <section id="user-reports">
+        <h2>User Reports</h2>
+        <p>Report suspicious activities or behaviors below:</p>
+        <form>
+            <label for="report-type">Select Type:</label>
+            <select id="report-type" name="report-type">
+                <option value="phishing">Phishing</option>
+                <option value="identity-theft">Identity Theft</option>
+                <option value="fake-website">Fake Website</option>
+            </select>
+            <br><br>
+            <label for="report-description">Description:</label><br>
+            <textarea id="report-description" name="report-description" rows="4" cols="50"></textarea>
+            <br><br>
+            <button type="submit">Submit Report</button>
+        </form>
+    </section>
+
+    <section id="anonymized-data">
+        <h2>Anonymized Data</h2>
+        <p>Here are some anonymized examples of recent fraud attempts:</p>
+        <ul>
+            <li>Example 1: Phishing email claiming to be from a bank.</li>
+            <li>Example 2: Fake website mimicking a popular e-commerce site.</li>
+        </ul>
+    </section>
+
+    <section id="trends-patterns">
+        <h2>Trends and Patterns</h2>
+        <p>Common tactics used in fraud:</p>
+        <ul>
+            <li>Social engineering techniques.</li>
+            <li>Impersonation of trusted entities.</li>
+        </ul>
+    </section>
+
+    <section id="alerts-updates">
+        <h2>Alerts and Updates</h2>
+        <p>Recent alerts on fraud schemes:</p>
+        <ul>
+            <li>New phishing campaign targeting financial institutions detected.</li>
+            <li>Security vulnerability reported in popular software.</li>
+        </ul>
+    </section>
+
+    <section id="community-tips">
+        <h2>Community Tips</h2>
+        <p>Share your tips for recognizing and avoiding scams:</p>
+        <ul class="tips">
+            <li>Always verify the sender’s email address.</li>
+            <li>Be cautious of unsolicited messages asking for personal information.</li>
+        </ul>
+    </section>
+
+</body>
+</html>
